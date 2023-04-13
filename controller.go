@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/theone-daxia/bdj/framework/gin"
+	"github.com/theone-daxia/bdj/provider/demo"
 	"time"
 )
 
@@ -21,5 +22,7 @@ func SubjectGetController(ctx *gin.Context) {
 }
 
 func TestController(ctx *gin.Context) {
-	ctx.ISetOkStatus().IJson("TestController")
+	demoService := ctx.MustMake(demo.Key).(demo.Service)
+	foo := demoService.GetFoo()
+	ctx.ISetOkStatus().IJson(foo)
 }

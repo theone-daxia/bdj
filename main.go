@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/theone-daxia/bdj/framework/gin"
 	"github.com/theone-daxia/bdj/framework/middleware"
+	"github.com/theone-daxia/bdj/provider/demo"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +15,7 @@ import (
 
 func main() {
 	core := gin.New()
+	core.Bind(&demo.DemoServiceProvider{})
 	core.Use(gin.Recovery(), middleware.Cost())
 	registerRouter(core)
 	server := http.Server{
