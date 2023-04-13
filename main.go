@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/theone-daxia/bdj/framework"
+	"github.com/theone-daxia/bdj/framework/gin"
 	"github.com/theone-daxia/bdj/framework/middleware"
 	"log"
 	"net/http"
@@ -13,8 +13,8 @@ import (
 )
 
 func main() {
-	core := framework.NewCore()
-	core.Use(middleware.Recovery(), middleware.Cost())
+	core := gin.New()
+	core.Use(gin.Recovery(), middleware.Cost())
 	registerRouter(core)
 	server := http.Server{
 		Addr:    ":8888",

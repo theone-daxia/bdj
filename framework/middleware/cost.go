@@ -1,17 +1,16 @@
 package middleware
 
 import (
-	"github.com/theone-daxia/bdj/framework"
+	"github.com/theone-daxia/bdj/framework/gin"
 	"log"
 	"time"
 )
 
-func Cost() framework.ControllerHandler {
-	return func(ctx *framework.Context) error {
+func Cost() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
 		startTime := time.Now()
 		ctx.Next()
 		cost := time.Since(startTime)
-		log.Printf("uri: %v, cost: %v", ctx.GetRequest().RequestURI, cost)
-		return nil
+		log.Printf("uri: %v, cost: %v", ctx.Request.RequestURI, cost)
 	}
 }

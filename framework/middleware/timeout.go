@@ -3,13 +3,13 @@ package middleware
 import (
 	"context"
 	"fmt"
-	"github.com/theone-daxia/bdj/framework"
+	"github.com/theone-daxia/bdj/framework/gin"
 	"log"
 	"time"
 )
 
-func Timeout(duration time.Duration) framework.ControllerHandler {
-	return func(ctx *framework.Context) error {
+func Timeout(duration time.Duration) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
 		durationCtx, cancel := context.WithTimeout(ctx.BaseContext(), duration)
 		defer cancel()
 
@@ -28,14 +28,13 @@ func Timeout(duration time.Duration) framework.ControllerHandler {
 
 		select {
 		case p := <-panicCh:
-			ctx.SetStatus(500).Json("time out")
+			ctx.ISetStatus(500).IJson("time out")
 			log.Println(p)
 		case <-finishCh:
 			fmt.Println("finish")
 		case <-durationCtx.Done():
-			ctx.SetHasTimeout()
-			ctx.SetStatus(500).Json("time out")
+			//ctx.ISetHasTimeout()
+			ctx.ISetStatus(500).IJson("time out")
 		}
-		return nil
 	}
 }
