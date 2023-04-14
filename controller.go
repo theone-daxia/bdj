@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/theone-daxia/bdj/app/provider/demo"
 	"github.com/theone-daxia/bdj/framework/gin"
-	"github.com/theone-daxia/bdj/provider/demo"
 	"time"
 )
 

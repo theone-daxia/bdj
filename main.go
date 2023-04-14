@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/theone-daxia/bdj/app/provider/demo"
 	"github.com/theone-daxia/bdj/framework/gin"
 	"github.com/theone-daxia/bdj/framework/middleware"
-	"github.com/theone-daxia/bdj/provider/demo"
 	"log"
 	"net/http"
 	"os"
