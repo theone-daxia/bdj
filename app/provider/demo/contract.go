@@ -2,10 +2,11 @@ package demo
 
 const Key = "bdj:demo"
 
-type Service interface {
-	GetFoo() Foo
+type IService interface {
+	GetAllStudent() []Student
 }
 
-type Foo struct {
+type Student struct {
+	ID   int
 	Name string
 }

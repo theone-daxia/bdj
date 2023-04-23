@@ -5,19 +5,25 @@ import (
 	"github.com/theone-daxia/bdj/framework"
 )
 
-type DemoService struct {
-	Service // 实现接口
-	c       framework.Container
+type Service struct {
+	c framework.Container
 }
 
-func (s *DemoService) GetFoo() Foo {
-	return Foo{
-		Name: "i am foo",
+func (s *Service) GetAllStudent() []Student {
+	return []Student{
+		{
+			ID:   1,
+			Name: "student 1",
+		},
+		{
+			ID:   2,
+			Name: "student 2",
+		},
 	}
 }
 
-func NewDemoService(params ...interface{}) (interface{}, error) {
+func NewService(params ...interface{}) (interface{}, error) {
 	c := params[0].(framework.Container)
 	fmt.Println("new demo service")
-	return &DemoService{c: c}, nil
+	return &Service{c: c}, nil
 }

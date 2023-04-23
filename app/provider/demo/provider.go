@@ -13,7 +13,7 @@ func (sp *DemoServiceProvider) Name() string {
 }
 
 func (sp *DemoServiceProvider) Register(c framework.Container) framework.NewInstance {
-	return NewDemoService
+	return NewService
 }
 
 func (sp *DemoServiceProvider) Params(c framework.Container) []interface{} {
