@@ -30,4 +30,7 @@ type App interface {
 
 	// TestFolder 存放测试用例、测试数据的目录
 	TestFolder() string
+
+	// LoadAppConfig 加载新的AppConfig，key为对应的函数转为小写下划线，比如ConfigFolder => config_folder
+	LoadAppConfig(kv map[string]string)
 }

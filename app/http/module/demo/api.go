@@ -2,6 +2,7 @@ package demo
 
 import (
 	demoService "github.com/theone-daxia/bdj/app/provider/demo"
+	"github.com/theone-daxia/bdj/framework/contract"
 	"github.com/theone-daxia/bdj/framework/gin"
 )
 
@@ -16,6 +17,7 @@ func Register(r *gin.Engine) error {
 	r.GET("demo/demo", api.Demo)
 	r.GET("demo/demo2", api.Demo2)
 	r.POST("demo/demo_post", api.DemoPost)
+	r.GET("demo/env", api.Env)
 
 	return nil
 }
@@ -48,4 +50,10 @@ func (api *DemoApi) DemoPost(c *gin.Context) {
 		c.AbortWithError(500, err)
 	}
 	c.JSON(200, nil)
+}
+
+func (api *DemoApi) Env(c *gin.Context) {
+	configService := c.MustMake(contract.ConfigKey).(contract.Config)
+	password := configService.GetString("database.mysql.password")
+	c.JSON(200, password)
 }

@@ -2,6 +2,7 @@ package framework
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 )
 
@@ -43,12 +44,24 @@ func NewBdjContainer() *BdjContainer {
 	}
 }
 
+// PrintProviders 输出服务容器中注册的关键字
+func (b *BdjContainer) PrintProviders() []string {
+	ret := []string{}
+	for _, provider := range b.providers {
+		name := provider.Name()
+
+		line := fmt.Sprint(name)
+		ret = append(ret, line)
+	}
+	return ret
+}
+
 func (b *BdjContainer) Bind(provider ServiceProvider) error {
 	b.lock.Lock()
-	defer b.lock.Unlock()
 	key := provider.Name()
 
 	b.providers[key] = provider
+	b.lock.Unlock()
 
 	// 推迟实例化，则直接返回
 	if provider.IsDefer() {
@@ -64,8 +77,16 @@ func (b *BdjContainer) Bind(provider ServiceProvider) error {
 }
 
 func (b *BdjContainer) IsBind(key string) bool {
-	_, ok := b.providers[key]
-	return ok
+	return b.findServiceProvider(key) != nil
+}
+
+func (b *BdjContainer) findServiceProvider(key string) ServiceProvider {
+	b.lock.RLock()
+	defer b.lock.RUnlock()
+	if sp, ok := b.providers[key]; ok {
+		return sp
+	}
+	return nil
 }
 
 // Make 调用 make 实例化服务
@@ -90,30 +111,19 @@ func (b *BdjContainer) MustMake(key string) interface{} {
 // make 真正实例化服务
 func (b *BdjContainer) make(key string, params []interface{}, forceNew bool) (interface{}, error) {
 	b.lock.RLock()
+	defer b.lock.RUnlock()
 
-	sp, ok := b.providers[key]
-	if !ok {
-		b.lock.RUnlock()
+	sp := b.findServiceProvider(key)
+	if sp == nil {
 		return nil, errors.New("provider:" + key + " is not registered")
 	}
 
 	// 需要强制重新实例化
 	if forceNew {
-		b.lock.RUnlock()
 		return b.newInstance(sp, params)
 	}
 
 	// 服务器容器中已经存在对应的服务实例，直接返回
-	if ins, ok := b.instances[key]; ok {
-		b.lock.RUnlock()
-		return ins, nil
-	}
-
-	b.lock.RUnlock()
-	b.lock.Lock()
-	defer b.lock.Unlock()
-
-	// 双重检查，在获得写锁后，可能有别的协程已经创建完成，可以直接返回，避免再创建。
 	if ins, ok := b.instances[key]; ok {
 		return ins, nil
 	}
